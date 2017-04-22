@@ -1,0 +1,26 @@
+version: '2'
+services:
+  application:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app:rw
+    command: bash -c 'rm -f /usr/src/app/tmp/pids/* && rails server -b 0.0.0.0'
+    links:
+      - database
+
+  database:
+    image: postgres:9.4.9
+    volumes_from:
+      - datastore
+    expose:
+      - 5432
+
+  datastore:
+    image: busybox:latest
+    volumes:
+      - /var/lib/postgresql/data
+    command: /bin/sh
